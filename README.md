@@ -1,13 +1,3 @@
-Predicting Flight Delays with Weather Variables as Features Using
-Gradient Boosting
-
-Sayom, Nazmus Shakib
-
-CSE, American International University-Bangladesh, Dhaka, Bangladesh,
-nsssayom@gmail.com
-
-# Introduction
-
 Business airlines are significant for the overall transportation
 framework. Considerably after the greater part a time of standard
 reception (particularly in the US), the passengers are so often troubled
@@ -162,7 +152,7 @@ Description of the features are following.
 
 # Training the Model 
 
-# I built the model using Trees as base learners (which are the default base learners) using XGBoost's scikit-learn compatible API. Along the way, I also used some of the common tuning parameters included in XGBoost in order to improve the model's performance, and using the root mean squared error (RMSE) performance metric to check the performance of the trained model on the test set. Root mean Squared error is the square root of the mean of the squared differences between the actual and the predicted values. 
+I built the model using Trees as base learners (which are the default base learners) using XGBoost's scikit-learn compatible API. Along the way, I also used some of the common tuning parameters included in XGBoost in order to improve the model's performance, and using the root mean squared error (RMSE) performance metric to check the performance of the trained model on the test set. Root mean Squared error is the square root of the mean of the squared differences between the actual and the predicted values. 
 
 XGBoost is well known to provide better solutions than other machine
 learning algorithms. In fact, since its inception, it has become the
