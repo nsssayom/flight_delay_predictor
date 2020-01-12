@@ -1,4 +1,4 @@
-﻿﻿# Predicting Flight Delays with Weather Variables as Features Using Gradient Boosting
+﻿# Predicting Flight Delays with Weather Variables as Features Using Gradient Boosting
 
 # Introduction
 
