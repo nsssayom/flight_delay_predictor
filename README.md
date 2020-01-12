@@ -1,3 +1,7 @@
+﻿# Predicting Flight Delays with Weather Variables as Features Using Gradient Boosting
+
+# Introduction
+
 Business airlines are significant for the overall transportation
 framework. Considerably after the greater part a time of standard
 reception (particularly in the US), the passengers are so often troubled
@@ -68,7 +72,7 @@ Reporting Carrier On-Time Performance Data is provided on monthly basis.
 12 zip files were downloaded and unzipped into 12 Comma Separated Values
 (CSV) files. Those files were merged into one file with a bash command.
 
-sed 1d \*\_ONTIME\_REPORTING\_2017\_\*.csv \> merged.csv
+    sed 1d \*\_ONTIME\_REPORTING\_2017\_\*.csv \> merged.csv
 
 The Origin field of the merged.csv contains the call sign of the
 airports the is collected from. But to join the data with NOAA LCD, a
@@ -76,17 +80,18 @@ common column was required. LCD Station metadata (lcd-station.txt) was
 used here to map the Origin column to useful WBAN column. Python pandas
 library utilized to used to perform this.
 
-import pandas as pd
 
-flight\_data = pd.read\_csv("merged.csv")
-
-station\_data = pd.read\_csv("lcd-stations.csv")
-
-flight\_with\_wban = pd.merge(flight\_data, station\_data, left\_on='ORIGIN', 
-
-right\_on='STATION', how='left')
-
-flight\_with\_wban.to\_csv("flight\_with\_wban.csv", index=False)
+        import pandas as pd
+    
+    flight\_data = pd.read\_csv("merged.csv")
+    
+    station\_data = pd.read\_csv("lcd-stations.csv")
+    
+    flight\_with\_wban = pd.merge(flight\_data, station\_data, left\_on='ORIGIN', 
+    
+    right\_on='STATION', how='left')
+    
+    flight\_with\_wban.to\_csv("flight\_with\_wban.csv", index=False)
 
 4.  Collecting NOAA LCD Dataset
 
@@ -103,29 +108,29 @@ Again, pandas library was used to merge the two datasets sorted on
 DATETIME by WBAN field. unified.csv was the merged file that has all the
 columns from both tables.
 
-import pandas as pd
-
-flight\_data = pd.read\_csv("unified/flight.csv")
-
-station\_data = pd.read\_csv("unified/weather.csv")
-
-flight\_data\['DATETIME'\] = pd.to\_datetime(flight\_data\['DATETIME'\])
-
-station\_data\['DATETIME'\] = pd.to\_datetime(station\_data\['DATETIME'\])
-
-merged = pd.merge\_asof(flight\_data.sort\_values('DATETIME'), 
-
-station\_data.sort\_values('DATETIME'), 
-
-                        by='WBAN', 
-
-                        on='DATETIME', 
-
-                        allow\_exact\_matches=True, 
-
-                        direction='nearest')
-
-merged.to\_csv("unified.csv", index=False)
+    import pandas as pd
+    
+    flight\_data = pd.read\_csv("unified/flight.csv")
+    
+    station\_data = pd.read\_csv("unified/weather.csv")
+    
+    flight\_data\['DATETIME'\] = pd.to\_datetime(flight\_data\['DATETIME'\])
+    
+    station\_data\['DATETIME'\] = pd.to\_datetime(station\_data\['DATETIME'\])
+    
+    merged = pd.merge\_asof(flight\_data.sort\_values('DATETIME'), 
+    
+    station\_data.sort\_values('DATETIME'), 
+    
+                            by='WBAN', 
+    
+                            on='DATETIME', 
+    
+                            allow\_exact\_matches=True, 
+    
+                            direction='nearest')
+    
+    merged.to\_csv("unified.csv", index=False)
 
 unified.csv will be used as the final dataset all over the project.
 
@@ -141,11 +146,11 @@ plots, it is clearly evident that, all the features other than
 Visibility and WindDirection has a relationship with the target label
 Weather\_Delay. So, those two features were dropped from the dataset.
 
-columns = \['Visibility', 'WindDirection'\]
-
-df.drop(columns, inplace=True, axis=1)
-
-df.to\_csv("dataset.csv", index=False)
+    columns = \['Visibility', 'WindDirection'\]
+    
+    df.drop(columns, inplace=True, axis=1)
+    
+    df.to\_csv("dataset.csv", index=False)
 
 ![](./media/image2.png)  
 Description of the features are following.
@@ -170,38 +175,38 @@ differentiated. then converted the dataset into an optimized data
 structure called Dmatrix that XGBoost supports and gives it acclaimed
 performance and efficiency gains.
 
-data\_dmatrix = xgb.DMatrix(data=X,label=y)
+    data\_dmatrix = xgb.DMatrix(data=X,label=y)
 
 The XGBoost regressor object was instantiated by calling the
 XGBRegressor() class from the XGBoost library with the hyper-parameters
 passed as arguments.
 
-xg\_reg = xgb.XGBRegressor(objective ='reg:squarederror', 
-
-                         colsample\_bytree = 0.3, 
-
-                         learning\_rate = 0.1, 
-
-                         max\_depth = 5, 
-
-                         alpha = 10,
-
-                         n\_estimators = 10)
+    xg\_reg = xgb.XGBRegressor(objective ='reg:squarederror', 
+    
+                             colsample\_bytree = 0.3, 
+    
+                             learning\_rate = 0.1, 
+    
+                             max\_depth = 5, 
+    
+                             alpha = 10,
+    
+                             n\_estimators = 10)
 
 Then the regressor was fitted with training data.
 
-xg\_reg.fit(X\_train,y\_train)
+    xg\_reg.fit(X\_train,y\_train)
 
 And the prediction was achieved by using *predic* function.
 
-preds = xg\_reg.predict(X\_test)
+    preds = xg\_reg.predict(X\_test)
 
 # Result
 
 Computed the RMSE by invoking the *mean\_sqaured\_error* function from
 *sklearn's* metrics module.
 
-rmse = np.sqrt(mean\_squared\_error(y\_test, preds))
+    rmse = np.sqrt(mean\_squared\_error(y\_test, preds))
 
 This will return the root mean square error of the test dataset. For
 further validation, a k-fold cross validation was performed where all
@@ -209,21 +214,21 @@ the entries in the original training dataset are used for both training
 as well as validation. Also, each entry is used for validation just
 once.
 
-cv\_results = xgb.cv(dtrain=data\_dmatrix, 
-
-                    params=params, 
-
-                    nfold=3, 
-
-                    num\_boost\_round=50,
-
-                    early\_stopping\_rounds=10,
-
-                    metrics="rmse", 
-
-                    as\_pandas=True, 
-
-                    seed=123)
+    cv\_results = xgb.cv(dtrain=data\_dmatrix, 
+    
+                        params=params, 
+    
+                        nfold=3, 
+    
+                        num\_boost\_round=50,
+    
+                        early\_stopping\_rounds=10,
+    
+                        metrics="rmse", 
+    
+                        as\_pandas=True, 
+    
+                        seed=123)
 
 *cv\_results* contain train and test RMSE metrics for each boosting
 round. The following command will print 5 rows of the metrics.
