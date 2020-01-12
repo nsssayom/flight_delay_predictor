@@ -71,7 +71,7 @@ Reporting Carrier On-Time Performance Data is provided on monthly basis.
 12 zip files were downloaded and unzipped into 12 Comma Separated Values
 (CSV) files. Those files were merged into one file with a bash command.
 
-    sed 1d \*\_ONTIME\_REPORTING\_2017\_\*.csv \> merged.csv
+    sed 1d \*_ONTIME_REPORTING_2017_\*.csv \> merged.csv
 
 The Origin field of the merged.csv contains the call sign of the
 airports the is collected from. But to join the data with NOAA LCD, a
@@ -82,15 +82,15 @@ library utilized to used to perform this.
 
         import pandas as pd
     
-    flight\_data = pd.read\_csv("merged.csv")
+    flight_data = pd.read_csv("merged.csv")
     
-    station\_data = pd.read\_csv("lcd-stations.csv")
+    station_data = pd.read_csv("lcd-stations.csv")
     
-    flight\_with\_wban = pd.merge(flight\_data, station\_data, left\_on='ORIGIN', 
+    flight_with_wban = pd.merge(flight_data, station_data, left_on='ORIGIN', 
     
-    right\_on='STATION', how='left')
+    right_on='STATION', how='left')
     
-    flight\_with\_wban.to\_csv("flight\_with\_wban.csv", index=False)
+    flight_with_wban.to_csv("flight_with_wban.csv", index=False)
 
 ###  Collecting NOAA LCD Dataset
 
@@ -109,27 +109,27 @@ columns from both tables.
 
     import pandas as pd
     
-    flight\_data = pd.read\_csv("unified/flight.csv")
+    flight_data = pd.read_csv("unified/flight.csv")
     
-    station\_data = pd.read\_csv("unified/weather.csv")
+    station_data = pd.read_csv("unified/weather.csv")
     
-    flight\_data\['DATETIME'\] = pd.to\_datetime(flight\_data\['DATETIME'\])
+    flight_data\['DATETIME'\] = pd.to_datetime(flight_data\['DATETIME'\])
     
-    station\_data\['DATETIME'\] = pd.to\_datetime(station\_data\['DATETIME'\])
+    station_data\['DATETIME'\] = pd.to_datetime(station_data\['DATETIME'\])
     
-    merged = pd.merge\_asof(flight\_data.sort\_values('DATETIME'), 
+    merged = pd.merge_asof(flight_data.sort_values('DATETIME'), 
     
-    station\_data.sort\_values('DATETIME'), 
+    station_data.sort_values('DATETIME'), 
     
                             by='WBAN', 
     
                             on='DATETIME', 
     
-                            allow\_exact\_matches=True, 
+                            allow_exact_matches=True, 
     
                             direction='nearest')
     
-    merged.to\_csv("unified.csv", index=False)
+    merged.to_csv("unified.csv", index=False)
 
 unified.csv will be used as the final dataset all over the project.
 
@@ -137,19 +137,19 @@ unified.csv will be used as the final dataset all over the project.
 
 ![](./media/image1.png)
 
-Figure 1: Features VS WEATHER\_DELAY
+Figure 1: Features VS WEATHER_DELAY
 
 MatPlotLib library has been used to plot the graphs on previous page to
 explore the relation between different features and the target. From the
 plots, it is clearly evident that, all the features other than
 Visibility and WindDirection has a relationship with the target label
-Weather\_Delay. So, those two features were dropped from the dataset.
+Weather_Delay. So, those two features were dropped from the dataset.
 
     columns = \['Visibility', 'WindDirection'\]
     
     df.drop(columns, inplace=True, axis=1)
     
-    df.to\_csv("dataset.csv", index=False)
+    df.to_csv("dataset.csv", index=False)
 
 ![](./media/image2.png)  
 Description of the features are following.
@@ -174,38 +174,38 @@ differentiated. then converted the dataset into an optimized data
 structure called Dmatrix that XGBoost supports and gives it acclaimed
 performance and efficiency gains.
 
-    data\_dmatrix = xgb.DMatrix(data=X,label=y)
+    data_dmatrix = xgb.DMatrix(data=X,label=y)
 
 The XGBoost regressor object was instantiated by calling the
 XGBRegressor() class from the XGBoost library with the hyper-parameters
 passed as arguments.
 
-    xg\_reg = xgb.XGBRegressor(objective ='reg:squarederror', 
+    xg_reg = xgb.XGBRegressor(objective ='reg:squarederror', 
     
-                             colsample\_bytree = 0.3, 
+                             colsample_bytree = 0.3, 
     
-                             learning\_rate = 0.1, 
+                             learning_rate = 0.1, 
     
-                             max\_depth = 5, 
+                             max_depth = 5, 
     
                              alpha = 10,
     
-                             n\_estimators = 10)
+                             n_estimators = 10)
 
 Then the regressor was fitted with training data.
 
-    xg\_reg.fit(X\_train,y\_train)
+    xg_reg.fit(X_train,y_train)
 
 And the prediction was achieved by using *predic* function.
 
-    preds = xg\_reg.predict(X\_test)
+    preds = xg_reg.predict(X_test)
 
 # Result
 
-Computed the RMSE by invoking the *mean\_sqaured\_error* function from
+Computed the RMSE by invoking the *mean_sqaured_error* function from
 *sklearn's* metrics module.
 
-    rmse = np.sqrt(mean\_squared\_error(y\_test, preds))
+    rmse = np.sqrt(mean_squared_error(y_test, preds))
 
 This will return the root mean square error of the test dataset. For
 further validation, a k-fold cross validation was performed where all
@@ -213,28 +213,28 @@ the entries in the original training dataset are used for both training
 as well as validation. Also, each entry is used for validation just
 once.
 
-    cv\_results = xgb.cv(dtrain=data\_dmatrix, 
+    cv_results = xgb.cv(dtrain=data_dmatrix, 
     
                         params=params, 
     
                         nfold=3, 
     
-                        num\_boost\_round=50,
+                        num_boost_round=50,
     
-                        early\_stopping\_rounds=10,
+                        early_stopping_rounds=10,
     
                         metrics="rmse", 
     
-                        as\_pandas=True, 
+                        as_pandas=True, 
     
                         seed=123)
 
-*cv\_results* contain train and test RMSE metrics for each boosting
+*cv_results* contain train and test RMSE metrics for each boosting
 round. The following command will print 5 rows of the metrics.
 
 ![](./media/image3.png)
 
-    cv\_results.head()
+    cv_results.head()
 
 As evident from the result, *train-rmse-mean* and *test-rmse-means* are
 very close in value. So, it can be concluded that, it is a substantially
@@ -263,7 +263,7 @@ prediction with greater accuracy.
 REFERENCES
 
 \[1\] Guy, Ann Brody. “Flight delays cost $32.9 billion.”
-http://news.berkeley.edu/2010/10/18/flight\_delays/
+http://news.berkeley.edu/2010/10/18/flight_delays/
 
 \[2\] Khanmohammadi, Sina, Salih Tutun, and Yunus Kucuk. "A New
 Multilevel Input Layer Artificial Neural Network for Predicting Flight
@@ -284,5 +284,5 @@ Record: Journal of the Transportation Research Board 1915 (2005): 85­94.
 optimization." IEEE Transactions on Control Systems Technology 1.3
 (1993): 144­154.
 
-\[7\] Anon. OST\_R: BTS: Transtats. Retrieved December 22, 2019 from
-https://www.transtats.bts.gov/DL\_SelectFields.asp?DB\_Short\_Name=On-Time\&Table\_ID=236
+\[7\] Anon. OST_R: BTS: Transtats. Retrieved December 22, 2019 from
+https://www.transtats.bts.gov/DL_SelectFields.asp?DB_Short_Name=On-Time\&Table_ID=236
