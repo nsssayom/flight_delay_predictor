@@ -1,4 +1,4 @@
-﻿# Predicting Flight Delays with Weather Variables as Features Using Gradient Boosting
+﻿﻿# Predicting Flight Delays with Weather Variables as Features Using Gradient Boosting
 
 # Introduction
 
@@ -49,24 +49,23 @@ were to be combined and that was not a simple undertaking.
 
 1.  Reporting Carrier On-Time Performance Dataset
 
-The US Bureau of Transport Statistics provides a webtool \[7\] to
-download this dataset with custom fields and period. Data for 2017 was
-downloaded from the webpage with FlightDate, CRSDepTime, Origin and
-WeatheDelay fields.
+	The US Bureau of Transport Statistics provides a webtool \[7\] to
+	download this dataset with custom fields and period. Data for 2017 was
+	downloaded from the webpage with FlightDate, CRSDepTime, Origin and
+	WeatheDelay fields.
 
 2.  Local Climatological Data (LCD)
 
-Local Climatological Data (LCD) hourly, daily, and monthly data for
-around 1,600 U.S. locations. Only hourly observations were useful for
-this project. NOAA also provides a webtool to download this dataset for
-a certain period of certain stations. The data collection process is
-described in later sections. WBAN, Date, Time, Dry Bulb Temp, Wet Bulb
-Temperature, Dew Point Temperature, Relative Humidity, Wind Speed, Wind
-Direction, and Station Pressure were the fields of interest.
+	Local Climatological Data (LCD) hourly, daily, and monthly data for
+	around 1,600 U.S. locations. Only hourly observations were useful for
+	this project. NOAA also provides a webtool to download this dataset for
+	a certain period of certain stations. The data collection process is
+	described in later sections. WBAN, Date, Time, Dry Bulb Temp, Wet Bulb
+	Temperature, Dew Point Temperature, Relative Humidity, Wind Speed, 	Wind Direction, and Station Pressure were the fields of interest.
 
 ## Data Collection and Stitching
 
-3.  Stitching Reporting Carrier On-Time Performance Data (RCOPD)
+### Stitching Reporting Carrier On-Time Performance Data (RCOPD)
 
 Reporting Carrier On-Time Performance Data is provided on monthly basis.
 12 zip files were downloaded and unzipped into 12 Comma Separated Values
@@ -93,7 +92,7 @@ library utilized to used to perform this.
     
     flight\_with\_wban.to\_csv("flight\_with\_wban.csv", index=False)
 
-4.  Collecting NOAA LCD Dataset
+###  Collecting NOAA LCD Dataset
 
 NOAA data download webtool doesn’t allow to download more than 10
 stations data-year per order. So, a program was written using selenium
@@ -102,7 +101,7 @@ less than 10 station for the year 2017. 19 orders were placed for 190
 stations isolated from the RCOPD. These CSV files were also merged with
 the similar bash command.
 
-5.  Stitching Datasets
+###  Stitching Datasets
 
 Again, pandas library was used to merge the two datasets sorted on
 DATETIME by WBAN field. unified.csv was the merged file that has all the
@@ -233,7 +232,9 @@ once.
 *cv\_results* contain train and test RMSE metrics for each boosting
 round. The following command will print 5 rows of the metrics.
 
-![](./media/image3.png)cv\_results.head()
+![](./media/image3.png)
+
+    cv\_results.head()
 
 As evident from the result, *train-rmse-mean* and *test-rmse-means* are
 very close in value. So, it can be concluded that, it is a substantially
